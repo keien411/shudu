@@ -59,7 +59,7 @@ var shuduTool = app.BaseClass.extend({
     //--------------------------获取接口----------------------------------
 
     GetShuDuArray:function () {
-        if (this.shudu.length > 0){
+        if (this.shudu.length == 9 && this.shudu[8].length == 9){
             return this.shudu;
         }
         return [];

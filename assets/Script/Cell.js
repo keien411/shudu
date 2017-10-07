@@ -10,14 +10,18 @@ cc.Class({
     },
 
     syncCandidates: function () {
-        for (var i = 0; i < this.candidatesLabels.length; i++) {
-            if (this.candidatesShown[i] == null) {
-                this.candidatesLabels[i].string = " ";
-            }
-            else {
-                this.candidatesLabels[i].string = this.candidatesShown[i].toString();
-            }
+
+        let len = this.candidatesShown.length;//a
+        for (let b = 0; b < this.candidatesLabels.length; b++) {
+            this.candidatesLabels[b].string = " ";
         }
+
+        for (let i = 0; i < len; i++){
+            let num = this.candidatesShown[i];
+            this.candidatesLabels[num - 1].string = num;
+        }
+
+
     },
 
     showUpdateEffect: function () {

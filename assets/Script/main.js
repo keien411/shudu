@@ -22,30 +22,34 @@ cc.Class({
             return
         }
 
+        this.isJiaZai = false;
+        this.time = 0;
         this.shuduTool = app.shuduTool();
         this.shudu = this.shuduTool.GetShuDuArray();//获得答案
         cc.log("shu",this.shudu);
+        if (this.shudu.length > 0){
+            this.isJiaZai = true;
+            this.cells = [];
 
-        this.cells = [];
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {//初始化数据
+                    let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
+                    this.cells.push(cell.node);
+                    cell.node.on('click', this.onCellTouch, this);
+                    this.grid.addChild(cell.node);
+                    cell.node.x = -55 * 4 + 55 * j;
+                    cell.node.y = 55 * 4 - 55 * i;
 
-
-
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
-                this.cells.push(cell.node);
-                cell.node.on('click', this.onCellTouch, this);
-                this.grid.addChild(cell.node);
-                cell.node.x = -55 * 4 + 55 * j;
-                cell.node.y = 55 * 4 - 55 * i;
-
-
-                cell.txt.node.active = true;
-                cell.txt.string = this.shudu[i][j];
-                cell.candidatesShown.push(this.shudu[i][j]);
-                cell.syncCandidates();
+                    cell.txt.node.active = true;
+                    cell.txt.string = this.shudu[i][j];
+                    cell.candidatesShown.push(this.shudu[i][j]);
+                    cell.syncCandidates();
+                }
             }
+        }else {
+            this.shuduTool.InitConfig();
         }
+
 
         for(let a = 0; a < this.numNode.childrenCount; a++){
             let children = this.numNode.children[a];
@@ -55,6 +59,29 @@ cc.Class({
 
     start:function () {
 
+    },
+
+    jiaZaiShuJu:function () {
+        if (this.shudu.length > 0){
+            this.isJiaZai = true;
+            this.cells = [];
+
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {//初始化数据
+                    let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
+                    this.cells.push(cell.node);
+                    cell.node.on('click', this.onCellTouch, this);
+                    this.grid.addChild(cell.node);
+                    cell.node.x = -55 * 4 + 55 * j;
+                    cell.node.y = 55 * 4 - 55 * i;
+
+                    cell.txt.node.active = true;
+                    cell.txt.string = this.shudu[i][j];
+                    cell.candidatesShown.push(this.shudu[i][j]);
+                    cell.syncCandidates();
+                }
+            }
+        }
     },
 
 
@@ -204,6 +231,13 @@ cc.Class({
     // called every framea
     update: function (dt) {
 
+        this.time += dt;
+        if (!this.isJiaZai && this.time > 1){
+            this.time = 0;
+            this.shudu = this.shuduTool.GetShuDuArray();//获得答案
+            cc.log("this.shudu222222222222222222222222222222222",this.shudu);
+            this.jiaZaiShuJu();
+        }
     },
 });
 
