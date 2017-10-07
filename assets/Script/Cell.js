@@ -40,7 +40,7 @@ cc.Class({
         for (var i = 0; i < this.candidatesLabels.length; i++) {
             this.candidatesLabels[i].string = " ";
         }
-        this.txt = "";
+        this.txt.string = "";
     }
 
 

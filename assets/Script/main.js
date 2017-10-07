@@ -208,6 +208,15 @@ cc.Class({
 
     },
 
+    click_clean:function () {
+        if (this.waitingCellIndex >= 0){
+            let c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            this.clearEditPanel();
+            this.editButton.children[0].color = cc.Color.WHITE;
+            c.clean();
+        }
+    },
+
     InitModel:function(){
         let modelName = "";
         try{
