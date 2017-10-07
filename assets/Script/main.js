@@ -9,6 +9,7 @@ cc.Class({
     properties: {
         grid: cc.Node,
         CellPrefab: {default: null, type: cc.Prefab},
+        numNode:cc.Node,
     },
 
     // use this for initialization
@@ -23,6 +24,11 @@ cc.Class({
                 cell.node.x = -55 * 4 + 55 * j;
                 cell.node.y = 55 * 4 - 55 * i;
             }
+        }
+
+        for(let a = 0; a < this.numNode.childrenCount; a++){
+            let children = this.numNode.children[a];
+            children.on('click', this.onNumTouch, this);
         }
     },
 
@@ -90,6 +96,17 @@ cc.Class({
             }
         }
 
+    },
+
+    onNumTouch: function (e) {
+
+        let num = e.detail.node.name.substr(e.detail.node.name.length-1,e.detail.node.name.length);
+        if (this.waitingCellIndex >= 0) {
+            var c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            c.txt.node.active = true;
+            c.txt.string = num;
+        }
+        
     },
 
     // called every framea

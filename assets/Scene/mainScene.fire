@@ -569,7 +569,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num01",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -817,7 +817,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num02",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -1065,7 +1065,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num03",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -1313,7 +1313,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num04",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -1561,7 +1561,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num05",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -1809,7 +1809,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num06",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -2057,7 +2057,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num07",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -2305,7 +2305,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num08",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -2553,7 +2553,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Button",
+    "_name": "num09",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -3896,6 +3896,9 @@
     },
     "CellPrefab": {
       "__uuid__": "a54d28e2-68e5-4175-9ebf-459cacdacba4"
+    },
+    "numNode": {
+      "__id__": 12
     }
   }
 ]
