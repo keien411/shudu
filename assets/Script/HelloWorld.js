@@ -20,14 +20,14 @@ cc.Class({
             for(let j = 0 ; j < 9 ; j++){
 
                 let shuduNum = this.checkArray(i,j);
-                cc.log("111111111111111",shuduNum);
+                //cc.log("111111111111111",shuduNum);
                 if (shuduNum == undefined){
                     cc.log("---------------------------------------------------");
                     return false;
                 }
                 else {
                     this.shudu[i][j] = parseInt(shuduNum);
-                    cc.log("this.shudu111111111[%s][%s] = %s",i,j,this.shudu[i][j]);
+                    //cc.log("this.shudu111111111[%s][%s] = %s",i,j,this.shudu[i][j]);
                 }
 
 
@@ -56,7 +56,7 @@ cc.Class({
         if (this.temporary.length > 0 && this.temporary.indexOf(shuduNum) != -1){
             //cc.log("this.temporary:%s,index:%s,shuduNum:%s",this.temporary.toString(),this.temporary.indexOf(shuduNum),shuduNum);
             this.temporary.splice(this.temporary.indexOf(shuduNum),1);//最终数确定拿走
-            cc.log("this.temporary:%s",this.temporary.toString())//a
+            //cc.log("this.temporary:%s",this.temporary.toString())//a
         }
     },
 
@@ -75,7 +75,7 @@ cc.Class({
 
         if (this.isRestore){
             this.isRestore = false;
-            cc.log("isRestore____________________________________________________",i);
+            //cc.log("isRestore____________________________________________________",i);
             this.isRestoreArray(i);
             return;
         }
@@ -236,13 +236,13 @@ cc.Class({
             for(let j = 0 ; j < 9 ; j++){
                 let shuduNum = this.checkArray(i,j);
                 if (shuduNum == undefined){
-                    cc.log("---------------------------------------------------");
+                    //cc.log("---------------------------------------------------");
                     return false;
                 }
                 else {
                     this.shudu[i][j] = parseInt(shuduNum);
 
-                    cc.log("this.shudu22222222222222[%s][%s] = %s",i,j,this.shudu[i][j]);
+                    //cc.log("this.shudu22222222222222[%s][%s] = %s",i,j,this.shudu[i][j]);
                 }
 
             }
