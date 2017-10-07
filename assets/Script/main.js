@@ -2,6 +2,7 @@
  * Created by c1720 on 2017/10/7.
  */
 const Cell = require("Cell");
+var app = require("app");
 
 cc.Class({
     extends: cc.Component,
@@ -14,6 +15,16 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+
+        if(!this.InitModel()){
+            cc.error("OnInitClientFinish InitModel fail");
+            return
+        }
+
+        this.shuduTool = app.shuduTool();
+        let shudu = this.shuduTool.GetShuDuArray();
+        cc.log("shu",shudu);
+
         this.cells = [];
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
@@ -23,6 +34,10 @@ cc.Class({
                 this.grid.addChild(cell.node);
                 cell.node.x = -55 * 4 + 55 * j;
                 cell.node.y = 55 * 4 - 55 * i;
+
+
+                cell.txt.node.active = true;
+                cell.txt.string = shudu[i][j];
             }
         }
 
@@ -106,7 +121,27 @@ cc.Class({
             c.txt.node.active = true;
             c.txt.string = num;
         }
-        
+
+    },
+
+    InitModel:function(){
+        let modelName = "";
+        try{
+            let NeedCreateList = app.NeedCreateList;
+            let count = NeedCreateList.length;
+            for(let index=0; index<count; index++){
+                modelName = NeedCreateList[index];
+                //设置所有单例引用接口到app
+                app[modelName] = require(modelName).GetModel;
+                cc.log("OnLoad require(%s)", modelName);
+            }
+        }
+        catch(error){
+            cc.log("OnLoad require(%s) error:%s", modelName, error.stack);
+            return false
+        }
+
+        return true;
     },
 
     // called every framea

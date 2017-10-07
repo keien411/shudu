@@ -1,20 +1,39 @@
+var app = require('app');
 
-cc.Class({
-    extends: cc.Component,
+var shuduTool = app.BaseClass.extend({
 
-    properties: {
+    Init:function(){
+        this.JS_Name = "shuduTool";
+
+        this.InitConfig();
+
+        cc.log("shuduTool Init");
+    },
+
+    //切换账号
+    OnReload:function(){
 
     },
 
-    // use this for initialization
-    onLoad: function () {
+    /**
+     * 初始化配置
+     */
+    InitConfig:function(){
         this.shudu = [];
         this.temporary = [];
         this.index = 0;
         this.isRestore = false;
+        this.SetShuDuArray();
     },
 
-    start:function () {
+
+
+    //--------------------------设置接口----------------------------------
+    /**
+     * 获取数独数组
+     * @param option
+     */
+    SetShuDuArray:function(){
         for(let i = 0 ; i < 9 ; i++){
             this.shudu[i] = [];
             for(let j = 0 ; j < 9 ; j++){
@@ -36,6 +55,17 @@ cc.Class({
         //cc.log("shudu:",this.shudu);
         //cc.log("this.shudu[%s][%s] = %s",1,3,this.shudu[1][3]);
     },
+
+    //--------------------------获取接口----------------------------------
+
+    GetShuDuArray:function () {
+        if (this.shudu.length > 0){
+            return this.shudu;
+        }
+        return [];
+    },
+
+    //--------------------------方法----------------------------------
 
     takeArray:function (index) {
         if (this.temporary.length < 1){
@@ -61,7 +91,7 @@ cc.Class({
         }
     },
 
-     checkArray:function (i,j,isCheck = false) {
+    checkArray:function (i,j,isCheck = false) {
 
 
 
@@ -248,12 +278,21 @@ cc.Class({
 
             }
         }
-        cc.log("shuduzzzzzzzzzzzzzzzzzzzzzzzzzzz:",this.shudu);
+        //cc.log("shuduzzzzzzzzzzzzzzzzzzzzzzzzzzz:",this.shudu);
 
     },
 
-    // called every framea
-    update: function (dt) {
-
-    },
 });
+
+
+var g_shuduTool = null;
+
+/**
+ * 绑定模块外部方法
+ */
+exports.GetModel = function(){
+    if(!g_shuduTool){
+        g_shuduTool = new shuduTool();
+    }
+    return g_shuduTool;
+};
