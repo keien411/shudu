@@ -135,9 +135,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 245,
+      "g": 226,
+      "b": 197,
       "a": 255
     },
     "_cascadeOpacityEnabled": true,
@@ -3884,12 +3884,18 @@
     "_fitHeight": true
   },
   {
-    "__type__": "c366e7ap+pFybnmPOYpUuV5",
+    "__type__": "635d2/c7p5F9ZOrVtfZ1kkf",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 2
     },
-    "_enabled": true
+    "_enabled": true,
+    "grid": {
+      "__id__": 7
+    },
+    "CellPrefab": {
+      "__uuid__": "a54d28e2-68e5-4175-9ebf-459cacdacba4"
+    }
   }
 ]

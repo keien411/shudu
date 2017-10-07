@@ -41,8 +41,9 @@ cc.Class({
         if (this.temporary.length < 1){
             let linArray = [1,2,3,4,5,6,7,8,9]; //补充临时变量a
             for(let q = 0 ; q < 9; ++q){
-                let index = parseInt(Math.random()*linArray.length, 10);
-                this.temporary.push(parseInt(linArray.splice(index,1)));
+                let index2 = parseInt(Math.random()*(linArray.length), 10);
+                //cc.log("index",index,"length",linArray.length);
+                this.temporary.push(linArray.splice(index2,1)[0]);
             }
 
         }
