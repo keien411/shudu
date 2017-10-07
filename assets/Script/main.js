@@ -11,6 +11,7 @@ cc.Class({
         grid: cc.Node,
         CellPrefab: {default: null, type: cc.Prefab},
         numNode:cc.Node,
+        editButton:cc.Node,
     },
 
     // use this for initialization
@@ -22,10 +23,13 @@ cc.Class({
         }
 
         this.shuduTool = app.shuduTool();
-        let shudu = this.shuduTool.GetShuDuArray();
-        cc.log("shu",shudu);
+        this.shudu = this.shuduTool.GetShuDuArray();//获得答案
+        cc.log("shu",this.shudu);
 
         this.cells = [];
+
+
+
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
                 let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
@@ -37,7 +41,9 @@ cc.Class({
 
 
                 cell.txt.node.active = true;
-                cell.txt.string = shudu[i][j];
+                cell.txt.string = this.shudu[i][j];
+                cell.candidatesShown.push(this.shudu[i][j]);
+                cell.syncCandidates();
             }
         }
 
@@ -60,8 +66,12 @@ cc.Class({
             this.waitingCellIndex = this.cells.indexOf(e.detail.node);
             this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
 
-            this.cells[this.waitingCellIndex].getComponent(Cell).txt.node.active = false;
-            this.cells[this.waitingCellIndex].getComponent(Cell).candidates.active = true;
+            if (this.cells[this.waitingCellIndex].getComponent(Cell).candidates.active || this.cells[this.waitingCellIndex].getComponent(Cell).candidatesShown.length > 1){
+                this.editButton.children[0].color = cc.Color.YELLOW;
+            }
+            else {
+                this.editButton.children[0].color = cc.Color.WHITE;
+            }
             this.mapCandidatesToPanel();
 
         } else {
@@ -77,37 +87,32 @@ cc.Class({
     clearWaitingCellHighlight: function () {
         if (this.waitingCellIndex >= 0) {
             var c = this.cells[this.waitingCellIndex].getComponent(Cell);
-
-            // if (this.wrongCells.indexOf(this.waitingCellIndex) >= 0) {
-            //     c.txt.node.active = true;
-            //     c.candidates.active = false;
-            // }
-            // else {
-            //     c.txt.node.active = false;
-            //     c.candidates.active = true;
-            // }
             c.node.color = cc.Color.WHITE;
-
             this.waitingCellIndex = -1;
         }
     },
 
     clearEditPanel: function () {
-        // for (var i = 0; i < this.panel.nums.length; i++) {
-        //     this.panel.nums[i].node.getChildByName("txt").getComponent(cc.Label).node.color = cc.Color.WHITE;
-        // }
+        for(let a = 0; a < this.numNode.childrenCount; a++){
+            let children = this.numNode.children[a];
+            children.children[0].color = cc.Color.WHITE;
+        }
     },
 
     mapCandidatesToPanel: function () {
         if (this.waitingCellIndex >= 0) {
             var c = this.cells[this.waitingCellIndex].getComponent(Cell);
-            for (var i = 0; i < c.candidatesLabels.length; i++) {
-                // if (c.candidatesLabels[i].string == this.panel.nums[i].node.getChildByName("txt").getComponent(cc.Label).string) {
-                //     this.panel.nums[i].node.getChildByName("txt").getComponent(cc.Label).node.color = cc.Color.YELLOW;
-                // }
-                // else {
-                //     this.panel.nums[i].node.getChildByName("txt").getComponent(cc.Label).node.color = cc.Color.WHITE;
-                // }
+            for (let b = 0; b < c.candidatesShown.length; b++){
+                let num = c.candidatesShown[b];
+                for(let a = 0; a < this.numNode.childrenCount; a++){
+                    let children = this.numNode.children[a];
+                    let num2 = children.name.substr(children.name.length-1,children.name.length);
+                    if (num2 == num){
+                        children.children[0].color = cc.Color.YELLOW;
+                    }
+
+                }
+
             }
         }
 
@@ -116,10 +121,62 @@ cc.Class({
     onNumTouch: function (e) {
 
         let num = e.detail.node.name.substr(e.detail.node.name.length-1,e.detail.node.name.length);
+        num = parseInt(num);
         if (this.waitingCellIndex >= 0) {
-            var c = this.cells[this.waitingCellIndex].getComponent(Cell);
-            c.txt.node.active = true;
-            c.txt.string = num;
+            let c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            if(c.candidatesShown.indexOf(num) < 0){
+                c.candidatesShown.push(num);
+                c.syncCandidates();
+                e.detail.node.children[0].color = cc.Color.YELLOW;
+            }
+            else {
+                c.candidatesShown.splice(c.candidatesShown.indexOf(num),1);
+                c.syncCandidates();
+                e.detail.node.children[0].color = cc.Color.WHITE;
+            }
+
+
+            if (c.candidatesShown.length > 1){
+                c.txt.node.active = false;
+                c.candidates.active = true;
+                this.editButton.children[0].color = cc.Color.YELLOW;
+            }
+            else if (c.candidatesShown.length < 2 && c.candidatesShown.length > 0){
+                c.txt.node.active = true;
+                c.candidates.active = false;
+                c.txt.string = c.candidatesShown[0];
+                this.editButton.children[0].color = cc.Color.WHITE;
+            }
+            else {
+                c.txt.node.active = true;
+                c.candidates.active = false;
+                c.txt.string = "";
+
+            }
+        }
+
+    },
+
+    click_editButton:function () {
+
+        if (this.waitingCellIndex >= 0){
+            let c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            if (c.candidatesShown.length > 1){
+                return;
+            }
+            else if (c.candidatesShown.length = 1){
+                if (c.candidates.active){
+                    c.candidates.active = false;
+                    c.txt.node.active = true;
+                    this.editButton.children[0].color = cc.Color.WHITE;
+                }
+                else {
+                    c.txt.node.active = false;
+                    c.candidates.active = true;
+                    this.editButton.children[0].color = cc.Color.YELLOW;
+                }
+
+            }
         }
 
     },
