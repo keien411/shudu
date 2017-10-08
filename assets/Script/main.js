@@ -113,6 +113,7 @@ cc.Class({
             this.onBoardTouch(e);
             this.waitingCellIndex = this.cells.indexOf(e.detail.node);
             let cell = this.cells[this.waitingCellIndex].getComponent(Cell);
+            this.checkNum(cell.candidatesShown);
             if (cell.isChange){
                 this.cells[this.waitingCellIndex].color = cc.Color.GRAY;
                 return;
@@ -198,6 +199,7 @@ cc.Class({
 
             if (c.candidatesShown.length > 1){
                 c.txt.node.active = false;
+                c.txt.string = c.candidatesShown[c.candidatesShown.length-1];
                 c.candidates.active = true;
                 this.editButton.children[0].color = cc.Color.YELLOW;
             }
@@ -213,6 +215,9 @@ cc.Class({
                 c.txt.string = "";
 
             }
+
+            this.checkNum(c.candidatesShown);
+            this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
         }
 
     },
@@ -248,6 +253,54 @@ cc.Class({
             this.editButton.children[0].color = cc.Color.WHITE;
             c.clean();
         }
+    },
+
+    checkNum:function (celNumArray) {
+
+        for (let index = 0; index < celNumArray.length; index++){
+            for(let i = 0; i < this.cells.length; i++){
+                let c = this.cells[i].getComponent(Cell);
+                let num = c.txt.string;
+                if (!num){
+                    continue;
+                }
+
+                let candNum = celNumArray[index];
+
+                if (c.candidatesShown.indexOf(candNum) >= 0){
+                    c.node.color = cc.color(125, 194, 62);
+                    c.isLight = true;
+
+                }
+                else {
+                    if (c.isLight){
+                        continue;
+                    }
+                    if (c.isChange){
+                        c.node.color = cc.color(230, 212, 167);
+                    }
+                    else {
+                        c.node.color = cc.Color.WHITE;
+                    }
+                }
+
+            }
+        }
+
+        for (let i = 0; i < this.cells.length; i++){
+            let c = this.cells[i].getComponent(Cell);
+            c.isLight = false;
+            if (celNumArray.length < 1){
+                if (c.isChange){
+                    c.node.color = cc.color(230, 212, 167);
+                }
+                else {
+                    c.node.color = cc.Color.WHITE;
+                }
+            }
+
+        }
+
     },
 
     InitModel:function(){

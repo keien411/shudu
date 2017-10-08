@@ -7,6 +7,7 @@ cc.Class({
         candidates: cc.Node,
         candidatesShown: [],
         isChange: false,
+        isLight: false,
         candidatesLabels: [cc.Label]
     },
 
