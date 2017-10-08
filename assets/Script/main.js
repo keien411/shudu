@@ -249,9 +249,14 @@ cc.Class({
     click_clean:function () {
         if (this.waitingCellIndex >= 0){
             let c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            if (c.isChange){
+                return;
+            }
             this.clearEditPanel();
             this.editButton.children[0].color = cc.Color.WHITE;
             c.clean();
+            this.checkNum(c.candidatesShown);
+            this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
         }
     },
 
