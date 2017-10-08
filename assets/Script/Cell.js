@@ -6,6 +6,7 @@ cc.Class({
         txt: cc.Label,
         candidates: cc.Node,
         candidatesShown: [],
+        isChange: false,
         candidatesLabels: [cc.Label]
     },
 

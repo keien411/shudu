@@ -32,6 +32,15 @@ cc.Class({
             this.cells = [];
 
             for (let i = 0; i < 9; i++) {
+                let initHideArray = [1,2,3,4,5,6,7,8,0];
+                //Todo 随机数抽出来当难度 后面从用户选择的难度进行设置
+                let ciIndex = parseInt(Math.random()*2 + 4, 10); // 4---6
+                // cc.log("ciIndex",ciIndex);
+                for (let index = 0 ; index < ciIndex; index++){
+                    let index2 = parseInt(Math.random()*(initHideArray.length), 10);
+                    initHideArray.splice(index2,1);
+                }
+
                 for (let j = 0; j < 9; j++) {//初始化数据
                     let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
                     this.cells.push(cell.node);
@@ -40,10 +49,22 @@ cc.Class({
                     cell.node.x = -55 * 4 + 55 * j;
                     cell.node.y = 55 * 4 - 55 * i;
 
-                    cell.txt.node.active = true;
-                    cell.txt.string = this.shudu[i][j];
-                    cell.candidatesShown.push(this.shudu[i][j]);
-                    cell.syncCandidates();
+                    if (initHideArray.indexOf(j) >= 0){
+                        cell.txt.node.active = true;
+                        cell.txt.string = this.shudu[i][j];
+                        cell.candidatesShown.push(this.shudu[i][j]);
+                        cell.syncCandidates();
+
+                        cell.node.color = cc.color(230, 212, 167);
+                        cell.txt.node.color = cc.Color.BLACK;
+                        cell.isChange = true;
+                        // cell.getComponent(cc.Button).interactable = false;
+                    }
+                    else {
+                        cell.txt.node.active = true;
+                        cell.txt.string = "";
+                    }
+
                 }
             }
         }else {
@@ -91,9 +112,13 @@ cc.Class({
         if (this.waitingCellIndex != touchedCellIndex) {
             this.onBoardTouch(e);
             this.waitingCellIndex = this.cells.indexOf(e.detail.node);
+            let cell = this.cells[this.waitingCellIndex].getComponent(Cell);
+            if (cell.isChange){
+                this.cells[this.waitingCellIndex].color = cc.Color.GRAY;
+                return;
+            }
             this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
-
-            if (this.cells[this.waitingCellIndex].getComponent(Cell).candidates.active || this.cells[this.waitingCellIndex].getComponent(Cell).candidatesShown.length > 1){
+            if (cell.candidates.active || cell.candidatesShown.length > 1){
                 this.editButton.children[0].color = cc.Color.YELLOW;
             }
             else {
@@ -114,7 +139,12 @@ cc.Class({
     clearWaitingCellHighlight: function () {
         if (this.waitingCellIndex >= 0) {
             var c = this.cells[this.waitingCellIndex].getComponent(Cell);
-            c.node.color = cc.Color.WHITE;
+            if (c.isChange){
+                c.node.color = cc.color(230, 212, 167);
+            }
+            else {
+                c.node.color = cc.Color.WHITE;
+            }
             this.waitingCellIndex = -1;
         }
     },
@@ -151,6 +181,9 @@ cc.Class({
         num = parseInt(num);
         if (this.waitingCellIndex >= 0) {
             let c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            if (c.isChange){
+                return
+            }
             if(c.candidatesShown.indexOf(num) < 0){
                 c.candidatesShown.push(num);
                 c.syncCandidates();
