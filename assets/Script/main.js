@@ -27,6 +27,22 @@ cc.Class({
         this.shuduTool = app.shuduTool();
         this.shudu = this.shuduTool.GetShuDuArray();//获得答案
         cc.log("shu",this.shudu);
+        if (!this.jiaZaiShuJu()){
+            this.shuduTool.InitConfig();
+        }
+
+
+        for(let a = 0; a < this.numNode.childrenCount; a++){
+            let children = this.numNode.children[a];
+            children.on('click', this.onNumTouch, this);
+        }
+    },
+
+    start:function () {
+
+    },
+
+    jiaZaiShuJu:function () {
         if (this.shudu.length > 0){
             this.isJiaZai = true;
             this.cells = [];
@@ -67,41 +83,10 @@ cc.Class({
 
                 }
             }
-        }else {
-            this.shuduTool.InitConfig();
+            return true;
         }
-
-
-        for(let a = 0; a < this.numNode.childrenCount; a++){
-            let children = this.numNode.children[a];
-            children.on('click', this.onNumTouch, this);
-        }
-    },
-
-    start:function () {
-
-    },
-
-    jiaZaiShuJu:function () {
-        if (this.shudu.length > 0){
-            this.isJiaZai = true;
-            this.cells = [];
-
-            for (let i = 0; i < 9; i++) {
-                for (let j = 0; j < 9; j++) {//初始化数据
-                    let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
-                    this.cells.push(cell.node);
-                    cell.node.on('click', this.onCellTouch, this);
-                    this.grid.addChild(cell.node);
-                    cell.node.x = -55 * 4 + 55 * j;
-                    cell.node.y = 55 * 4 - 55 * i;
-
-                    cell.txt.node.active = true;
-                    cell.txt.string = this.shudu[i][j];
-                    cell.candidatesShown.push(this.shudu[i][j]);
-                    cell.syncCandidates();
-                }
-            }
+        else {
+            return false;
         }
     },
 
@@ -218,6 +203,7 @@ cc.Class({
 
             this.checkNum(c.candidatesShown);
             this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
+            this.checkNumIsTrue(this.waitingCellIndex,c.candidatesShown[c.candidatesShown.length-1]);
         }
 
     },
@@ -308,6 +294,20 @@ cc.Class({
 
     },
 
+    checkNumIsTrue:function (cellIndex,num) {
+        let checkArray = this.shuduTool.GetCheckIsTrueArray(cellIndex);
+        checkArray.splice(checkArray.indexOf(cellIndex),1);//弃掉自己
+        //cc.log("checkArray",checkArray);
+        for (let a = 0; a < checkArray.length; a++){
+            let index = checkArray[a];
+            let c = this.cells[index].getComponent(Cell);
+            if (c.candidatesShown.indexOf(num) >= 0){
+                c.showUpdateEffect();
+            }
+        }
+
+    },
+
     InitModel:function(){
         let modelName = "";
         try{
@@ -322,7 +322,7 @@ cc.Class({
         }
         catch(error){
             cc.log("OnLoad require(%s) error:%s", modelName, error.stack);
-            return false
+            return false;
         }
 
         return true;

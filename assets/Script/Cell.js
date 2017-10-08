@@ -2,7 +2,6 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        effect: cc.Node,
         txt: cc.Label,
         candidates: cc.Node,
         candidatesShown: [],
@@ -27,9 +26,8 @@ cc.Class({
     },
 
     showUpdateEffect: function () {
-        this.effect.opacity = 255;
-        var a = cc.fadeOut(1);
-        this.effect.runAction(a);
+        let action = cc.sequence(cc.fadeOut(0.1),cc.tintTo(0.1, 255, 0, 0),cc.fadeIn(0.1));
+        this.node.runAction(cc.repeat(action,2));
     },
 
     // use this for initialization

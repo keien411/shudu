@@ -65,8 +65,62 @@ var shuduTool = app.BaseClass.extend({
         return [];
     },
 
+    GetCheckIsTrueArray:function (cellIndex) {
+        let hengArray = [];
+        let shuArray = [];
+        let gongArray = [];
+        let hengNum = parseInt(cellIndex / 9,10);
+
+        for (let h = hengNum * 9; h < hengNum * 9 + 9 ; h++){
+
+            hengArray.push(h);
+        }
+
+        for (let sJia = cellIndex; sJia < 81 ; sJia = sJia + 9){
+            shuArray.push(sJia);
+        }
+
+        for (let sJian = cellIndex; sJian >= 0 ; sJian = sJian - 9){
+            shuArray.push(sJian);
+        }
+
+        let gongHNum = hengNum % 3;
+        let gongSNum = cellIndex % 3;
+
+        let zuoShangJiaoNum = (cellIndex - gongSNum) - gongHNum * 9;
+
+
+        for (let gong1 = 0; gong1 < 3 ; gong1++){
+            let initNum = zuoShangJiaoNum + gong1;
+            gongArray.push(initNum);
+            gongArray.push(initNum+9);
+            gongArray.push(initNum+18);
+        }
+
+        // cc.log("heng",hengArray);
+        // cc.log("shu",shuArray);
+        // cc.log("gong",gongArray);
+
+        let zongArray = [];
+        zongArray = zongArray.concat(hengArray,shuArray,gongArray);
+        zongArray = this.unique(zongArray);
+        return zongArray;
+
+    },
+
     //--------------------------方法----------------------------------
 
+    //数组去重复
+    unique:function(arr) {
+        let result = [], hash = {};
+        for (let i = 0, elem; (elem = arr[i]) != null; i++) {
+            if (!hash[elem]) {
+                result.push(elem);
+                hash[elem] = true;
+            }
+        }
+        return result;
+    },
     takeArray:function (index) {
         if (this.temporary.length < 1){
             let linArray = [1,2,3,4,5,6,7,8,9]; //补充临时变量a
