@@ -13,19 +13,45 @@ cc.Class({
         numNode:cc.Node,
         editButton:cc.Node,
         winNode:cc.Node,
+        levelLabel:cc.Label,
     },
 
     // use this for initialization
     onLoad: function () {
-
-        if(!this.InitModel()){
-            cc.error("OnInitClientFinish InitModel fail");
-            return
-        }
-
         this.isJiaZai = false;
         this.time = 0;
         this.shuduTool = app.shuduTool();
+        this.LocalDataManager = app.LocalDataManager();
+        let level = this.LocalDataManager.GetConfigProperty("SysSetting","choeseLevel");
+        this.firstNum = 0;
+        this.secendNum = 0;
+        switch (level){
+            case 0:
+                this.firstNum = 4;
+                this.secendNum = 6;
+                this.levelLabel.string = "EASY";
+                break
+            case 1:
+                this.firstNum = 5;
+                this.secendNum = 6;
+                this.levelLabel.string = "MEDIUM";
+                break
+            case 2:
+                this.firstNum = 6;
+                this.secendNum = 7;
+                this.levelLabel.string = "HARD";
+                break
+            case 3:
+                this.firstNum = 6;
+                this.secendNum = 8;
+                this.levelLabel.string = "EXTREME";
+                break
+            default:
+                this.firstNum = 4;
+                this.secendNum = 6;
+                this.levelLabel.string = "EASY";
+                break
+        }
         this.shudu = this.shuduTool.GetShuDuArray();//获得答案
         cc.log("shu",this.shudu);
         if (!this.jiaZaiShuJu()){
@@ -50,9 +76,8 @@ cc.Class({
 
             for (let i = 0; i < 9; i++) {
                 let initHideArray = [1,2,3,4,5,6,7,8,0];
-                //Todo 随机数抽出来当难度 后面从用户选择的难度进行设置
                 //let ciIndex = parseInt(Math.random()*2 + 4, 10); // 4---6
-                let ciIndex = 1;
+                let ciIndex = this.TakeRandomNumber(this.firstNum,this.secendNum);
                 // cc.log("ciIndex",ciIndex);
                 for (let index = 0 ; index < ciIndex; index++){
                     let index2 = parseInt(Math.random()*(initHideArray.length), 10);
@@ -326,24 +351,9 @@ cc.Class({
 
     },
 
-    InitModel:function(){
-        let modelName = "";
-        try{
-            let NeedCreateList = app.NeedCreateList;
-            let count = NeedCreateList.length;
-            for(let index=0; index<count; index++){
-                modelName = NeedCreateList[index];
-                //设置所有单例引用接口到app
-                app[modelName] = require(modelName).GetModel;
-                cc.log("OnLoad require(%s)", modelName);
-            }
-        }
-        catch(error){
-            cc.log("OnLoad require(%s) error:%s", modelName, error.stack);
-            return false;
-        }
-
-        return true;
+    TakeRandomNumber:function (firstNum,SecendNum) {
+        let ciIndex = parseInt(Math.random()*(SecendNum - firstNum) + firstNum, 10); // 4---6
+        return ciIndex;
     },
 
     // called every framea
@@ -357,5 +367,6 @@ cc.Class({
             this.jiaZaiShuJu();
         }
     },
+
 });
 

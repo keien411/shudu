@@ -205,7 +205,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "410fb916-8721-4663-bab8-34397391ace7"
+      "__uuid__": "45f7166a-5584-4588-966f-b2e2aa5f1981"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -3433,7 +3433,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Label",
+    "_name": "level",
     "_objFlags": 0,
     "_parent": {
       "__id__": 82
@@ -4156,6 +4156,9 @@
     },
     "winNode": {
       "__id__": 94
+    },
+    "levelLabel": {
+      "__id__": 84
     }
   }
 ]

@@ -18,6 +18,7 @@ module.exports = apiDict;
 let NeedCreateList = [
 
     "shuduTool",
+    "LocalDataManager",
 
 ];
 
