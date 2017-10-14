@@ -12,6 +12,7 @@ cc.Class({
         CellPrefab: {default: null, type: cc.Prefab},
         numNode:cc.Node,
         editButton:cc.Node,
+        winNode:cc.Node,
     },
 
     // use this for initialization
@@ -50,7 +51,8 @@ cc.Class({
             for (let i = 0; i < 9; i++) {
                 let initHideArray = [1,2,3,4,5,6,7,8,0];
                 //Todo 随机数抽出来当难度 后面从用户选择的难度进行设置
-                let ciIndex = parseInt(Math.random()*2 + 4, 10); // 4---6
+                //let ciIndex = parseInt(Math.random()*2 + 4, 10); // 4---6
+                let ciIndex = 1;
                 // cc.log("ciIndex",ciIndex);
                 for (let index = 0 ; index < ciIndex; index++){
                     let index2 = parseInt(Math.random()*(initHideArray.length), 10);
@@ -204,6 +206,13 @@ cc.Class({
             this.checkNum(c.candidatesShown);
             this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
             this.checkNumIsTrue(this.waitingCellIndex,c.candidatesShown[c.candidatesShown.length-1]);
+            let isWin = this.shuduTool.CheckWin(this.cells);
+            if (isWin){
+                this.winNode.active = true;
+                let winChild = this.winNode.children[0];
+                let action = cc.sequence(cc.scaleTo (0.1,0,0),cc.scaleTo(0.4, 1, 1));
+                winChild.runAction(action);
+            }
         }
 
     },
@@ -243,6 +252,15 @@ cc.Class({
             c.clean();
             this.checkNum(c.candidatesShown);
             this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
+        }
+    },
+
+    click_closeWin:function () {
+        if (this.winNode.active){
+            this.winNode.active = false;
+            let winChild = this.winNode.children[0];
+            winChild.scaleX = 0;
+            winChild.scaleY = 0;
         }
     },
 

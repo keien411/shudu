@@ -1,4 +1,5 @@
 var app = require('app');
+const Cell = require("Cell");
 
 var shuduTool = app.BaseClass.extend({
 
@@ -65,6 +66,7 @@ var shuduTool = app.BaseClass.extend({
         return [];
     },
 
+    //检查填写的是否正确
     GetCheckIsTrueArray:function (cellIndex) {
         let hengArray = [];
         let shuArray = [];
@@ -108,6 +110,40 @@ var shuduTool = app.BaseClass.extend({
 
     },
 
+    //检查是否赢得游戏aaaa
+    CheckWin(cells){
+
+        for (let i = 0; i < cells.length; i++) {
+
+            if (i%9 === 0){
+                let baseNum = parseInt(i/9,10) * 9;
+                let checkArray = [];
+                for (let a = 0; a < 9; a++){
+                    let cell = cells[baseNum+a].getComponent(Cell);
+
+                    if (!cell.txt.string){
+                        return false;
+                    }
+
+                    if (cell.candidatesShown.length != 1){
+                        return false;
+                    }
+                    checkArray.push(cell.txt.string);
+                    if (a == 8){
+                        let winIs = this.checkIsReArray(checkArray);
+                        if (winIs){
+                            return false;
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        return true;
+    },
+
     //--------------------------方法----------------------------------
 
     //数组去重复
@@ -121,6 +157,22 @@ var shuduTool = app.BaseClass.extend({
         }
         return result;
     },
+
+    //数组是否重复
+    checkIsReArray:function(arr) {
+        let result = [], hash = {};
+        for (let i = 0, elem; (elem = arr[i]) != null; i++) {
+            if (!hash[elem]) {
+                result.push(elem);
+                hash[elem] = true;
+            }
+            else {
+                return true;
+            }
+        }
+        return false;
+    },
+
     takeArray:function (index) {
         if (this.temporary.length < 1){
             let linArray = [1,2,3,4,5,6,7,8,9]; //补充临时变量a
