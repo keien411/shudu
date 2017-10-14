@@ -29,27 +29,27 @@ cc.Class({
             case 0:
                 this.firstNum = 4;
                 this.secendNum = 6;
-                this.levelLabel.string = "EASY";
+                this.levelLabel.string = "Easy";
                 break
             case 1:
                 this.firstNum = 5;
                 this.secendNum = 6;
-                this.levelLabel.string = "MEDIUM";
+                this.levelLabel.string = "Medium";
                 break
             case 2:
                 this.firstNum = 6;
                 this.secendNum = 7;
-                this.levelLabel.string = "HARD";
+                this.levelLabel.string = "Hard";
                 break
             case 3:
                 this.firstNum = 6;
                 this.secendNum = 8;
-                this.levelLabel.string = "EXTREME";
+                this.levelLabel.string = "Extreme";
                 break
             default:
                 this.firstNum = 4;
                 this.secendNum = 6;
-                this.levelLabel.string = "EASY";
+                this.levelLabel.string = "Easy";
                 break
         }
         this.shudu = this.shuduTool.GetShuDuArray();//获得答案
@@ -246,10 +246,14 @@ cc.Class({
 
         if (this.waitingCellIndex >= 0){
             let c = this.cells[this.waitingCellIndex].getComponent(Cell);
+            if (c.isChange){
+                return
+            }
+            
             if (c.candidatesShown.length > 1){
                 return;
             }
-            else if (c.candidatesShown.length = 1){
+            else if (c.candidatesShown.length == 1){
                 if (c.candidates.active){
                     c.candidates.active = false;
                     c.txt.node.active = true;
@@ -261,6 +265,9 @@ cc.Class({
                     this.editButton.children[0].color = cc.Color.YELLOW;
                 }
 
+            }
+            else if (c.candidatesShown.length == 0){
+                this.editButton.children[0].color = this.editButton.children[0].color.toString() == cc.Color.YELLOW.toString() ? cc.Color.WHITE : cc.Color.YELLOW;
             }
         }
 
