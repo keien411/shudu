@@ -274,7 +274,7 @@ cc.Class({
 
             this.checkNum(c.candidatesShown);
             this.cells[this.waitingCellIndex].color = cc.Color.YELLOW;
-            this.checkNumIsTrue(this.waitingCellIndex,c.candidatesShown[c.candidatesShown.length-1]);
+            this.checkNumIsTrue(this.waitingCellIndex,c.candidatesShown[c.candidatesShown.length-1],false);
             let isWin = this.shuduTool.CheckWin(this.cells);
             if (isWin){
                 this.winNode.active = true;
@@ -366,6 +366,34 @@ cc.Class({
         this.progressNode.active = true;
     },
 
+    click_helpButton:function () {
+        let errorArray = [];
+        for (let a = 0; a < this.cells.length; a++){
+            let c = this.cells[a].getComponent(Cell);
+            if (c.isChange){
+                c.node.color = cc.color(230, 212, 167);
+            }
+            else {
+                c.node.color = cc.Color.WHITE;
+            }
+            if (c.isChange || c.candidatesShown.length < 0){
+                continue
+            }
+            for (let b = 0; b < c.candidatesShown.length; b++){
+                let checkNum = c.candidatesShown[b];
+                let errorIndex = this.checkNumIsTrue(a,checkNum,true);
+                if (errorIndex !== -1){
+                    errorArray.push(errorIndex);
+                }
+            }
+        }
+
+        for (let d = 0;d < errorArray.length; d++){
+            let c = this.cells[errorArray[d]].getComponent(Cell);
+            c.showUpdateEffect();
+        }
+    },
+
     SaveShuDu:function () {
         let shuduDict = {};
         for (let a = 0; a < this.cells.length; a++){
@@ -426,7 +454,8 @@ cc.Class({
 
     },
 
-    checkNumIsTrue:function (cellIndex,num) {
+    checkNumIsTrue:function (cellIndex,num,isReturn) {
+        let errorIndex = -1;
         let checkArray = this.shuduTool.GetCheckIsTrueArray(cellIndex);
         checkArray.splice(checkArray.indexOf(cellIndex),1);//弃掉自己
         //cc.log("checkArray",checkArray);
@@ -434,10 +463,15 @@ cc.Class({
             let index = checkArray[a];
             let c = this.cells[index].getComponent(Cell);
             if (c.candidatesShown.indexOf(num) >= 0){
-                c.showUpdateEffect();
+                if (isReturn){
+                    errorIndex = cellIndex
+                }
+                else {
+                    c.showUpdateEffect();
+                }
             }
         }
-
+        return errorIndex
     },
 
     TakeRandomNumber:function (firstNum,SecendNum) {
