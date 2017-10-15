@@ -6,7 +6,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-
+        gameContinue:cc.Node,
     },
 
     // use this for initialization
@@ -18,7 +18,11 @@ cc.Class({
         }
 
         this.LocalDataManager = app.LocalDataManager();
-
+        this.gameContinue.active = false;
+        let progressMark = this.LocalDataManager.GetConfigProperty("SysSetting","progressMark");
+        if (progressMark){
+            this.gameContinue.active = true;
+        }
     },
 
     //初始化模块
@@ -58,6 +62,16 @@ cc.Class({
         this.ChooseLevel(3);
     },
 
+    gameContinueSceneYes:function () {
+        cc.director.preloadScene("mainScene", function (assets, error){
+            //跳转到游戏界面
+            cc.director.loadScene("mainScene");
+        });
+    },
+
+    gameContinueSceneNo:function () {
+        this.gameContinue.active = false;
+    },
 
     ChooseLevel:function (level) {
         cc.director.preloadScene("mainScene", function (assets, error){

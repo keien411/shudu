@@ -15,12 +15,15 @@ cc.Class({
         winNode:cc.Node,
         levelLabel:cc.Label,
         timeLabel:cc.Label,
+        progressNode:cc.Node,
+        saveSuccessNode:cc.Node,
     },
 
     // use this for initialization
     onLoad: function () {
         this.isJiaZai = false;
         this.time = 0;
+        this.cells = [];
         this.shuduTool = app.shuduTool();
         this.LocalDataManager = app.LocalDataManager();
         let level = this.LocalDataManager.GetConfigProperty("SysSetting","choeseLevel");
@@ -53,12 +56,52 @@ cc.Class({
                 this.levelLabel.string = "Easy";
                 break
         }
-        this.shudu = this.shuduTool.GetShuDuArray();//获得答案
-        cc.log("shu",this.shudu);
-        if (!this.jiaZaiShuJu()){
-            this.shuduTool.InitConfig();
-        }
+        let progressMark = this.LocalDataManager.GetConfigProperty("SysSetting","progressMark");
+        if (progressMark){
+            this.isJiaZai = true;
+            let time = this.LocalDataManager.GetConfigProperty("SysSetting","time");
+            this.time = time;
+            let shuduDict = this.LocalDataManager.GetConfigProperty("SysSetting","shuduDict");
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {//初始化数据
+                    let cell = cc.instantiate(this.CellPrefab).getComponent(Cell);
+                    this.cells.push(cell.node);
+                    cell.node.on('click', this.onCellTouch, this);
+                    this.grid.addChild(cell.node);
+                    cell.node.x = -55 * 4 + 55 * j;
+                    cell.node.y = 55 * 4 - 55 * i;
+                }
+            }
 
+            for (let a = 0; a < this.cells.length; a++){
+                let cell = this.cells[a].getComponent(Cell);
+                cell.txt.string = shuduDict[a].txt;
+                cell.candidatesShown = shuduDict[a].candidatesShown;
+                cell.isChange = shuduDict[a].isChange;
+                cell.syncCandidates();
+                if (cell.candidatesShown.length > 1){
+                    cell.txt.node.active = false;
+                    cell.candidates.active = true;
+                }
+                else {
+                    cell.txt.node.active = true;
+                    cell.candidates.active = false;
+                }
+
+                if (cell.isChange){
+                    cell.node.color = cc.color(230, 212, 167);
+                    cell.txt.node.color = cc.Color.BLACK;
+                }
+            }
+            this.LocalDataManager.SetConfigProperty("SysSetting", "progressMark", false);
+        }
+        else {
+            this.shudu = this.shuduTool.GetShuDuArray();//获得答案
+            cc.log("shu",this.shudu);
+            if (!this.jiaZaiShuJu()){
+                this.shuduTool.InitConfig();
+            }
+        }
 
         for(let a = 0; a < this.numNode.childrenCount; a++){
             let children = this.numNode.children[a];
@@ -73,7 +116,6 @@ cc.Class({
     jiaZaiShuJu:function () {
         if (this.shudu.length > 0){
             this.isJiaZai = true;
-            this.cells = [];
 
             for (let i = 0; i < 9; i++) {
                 let initHideArray = [1,2,3,4,5,6,7,8,0];
@@ -294,7 +336,40 @@ cc.Class({
             let winChild = this.winNode.children[0];
             winChild.scaleX = 0;
             winChild.scaleY = 0;
+            //Todo 进行下一把开局
         }
+    },
+
+    click_progressYes:function () {//as
+        let level = this.LocalDataManager.GetConfigProperty("SysSetting","choeseLevel");
+        let shudu = this.SaveShuDu();
+        this.LocalDataManager.SetConfigProperty("SysSetting", "choeseLevel", level);
+        this.LocalDataManager.SetConfigProperty("SysSetting", "progressMark", true);
+        this.LocalDataManager.SetConfigProperty("SysSetting", "time", this.time);
+        this.LocalDataManager.SetConfigProperty("SysSetting", "shuduDict", shudu);
+        this.progressNode.active = false;
+        let action = cc.sequence(cc.moveTo  (0.5,0,0),cc.delayTime(1.5),cc.moveTo (0.5, 0, 358));
+        this.saveSuccessNode.runAction(action);
+    },
+
+    click_progressNo:function () {
+        this.progressNode.active = false;
+    },
+
+    click_menuButton:function () {
+        this.progressNode.active = true;
+    },
+
+    SaveShuDu:function () {
+        let shuduDict = {};
+        for (let a = 0; a < this.cells.length; a++){
+            let c = this.cells[a].getComponent(Cell);
+            shuduDict[a] = {};
+            shuduDict[a]["txt"] = c.txt.string;
+            shuduDict[a]["candidatesShown"] = c.candidatesShown;
+            shuduDict[a]["isChange"] = c.isChange;
+        }
+        return shuduDict;
     },
 
     checkNum:function (celNumArray) {
@@ -376,7 +451,7 @@ cc.Class({
             time -= minute * 60;
         }
 
-        let second = parseInt(time,10);;
+        let second = parseInt(time,10);
 
         if (hour > 0){
             let timeArray = [this.PrefixInteger(hour,2),this.PrefixInteger(minute,2),this.PrefixInteger(second,2)].join(":");

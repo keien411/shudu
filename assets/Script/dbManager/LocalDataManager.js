@@ -14,7 +14,10 @@ var LocalDataManager = app.BaseClass.extend({
 	    //通用属性初始化字典
 	    this.InitDataDict = {
 							    "SysSetting":{
-                                    			"choeseLevel":0
+                                    			"choeseLevel":0,
+												"progressMark":false,
+												"time":0,
+												"shuduDict":{},
 										    },
 						    };
 
