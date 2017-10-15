@@ -23,6 +23,7 @@ cc.Class({
     onLoad: function () {
         this.isJiaZai = false;
         this.time = 0;
+        this.pauseTime = 0;
         this.cells = [];
         this.shuduTool = app.shuduTool();
         this.LocalDataManager = app.LocalDataManager();
@@ -345,18 +346,23 @@ cc.Class({
         let shudu = this.SaveShuDu();
         this.LocalDataManager.SetConfigProperty("SysSetting", "choeseLevel", level);
         this.LocalDataManager.SetConfigProperty("SysSetting", "progressMark", true);
-        this.LocalDataManager.SetConfigProperty("SysSetting", "time", this.time);
+        this.LocalDataManager.SetConfigProperty("SysSetting", "time", this.pauseTime);
         this.LocalDataManager.SetConfigProperty("SysSetting", "shuduDict", shudu);
         this.progressNode.active = false;
+        this.time = this.pauseTime;
+        this.pauseTime = 0;
         let action = cc.sequence(cc.moveTo  (0.5,0,0),cc.delayTime(1.5),cc.moveTo (0.5, 0, 358));
         this.saveSuccessNode.runAction(action);
     },
 
     click_progressNo:function () {
+        this.time = this.pauseTime;
+        this.pauseTime = 0;
         this.progressNode.active = false;
     },
 
     click_menuButton:function () {
+        this.pauseTime = this.time;
         this.progressNode.active = true;
     },
 
