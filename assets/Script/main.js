@@ -14,6 +14,7 @@ cc.Class({
         editButton:cc.Node,
         winNode:cc.Node,
         levelLabel:cc.Label,
+        timeLabel:cc.Label,
     },
 
     // use this for initialization
@@ -249,7 +250,7 @@ cc.Class({
             if (c.isChange){
                 return
             }
-            
+
             if (c.candidatesShown.length > 1){
                 return;
             }
@@ -363,6 +364,34 @@ cc.Class({
         return ciIndex;
     },
 
+    //时间格式转化
+    FormatTime:function (time) {
+        let hour = parseInt(time/3600,10);
+        if (hour > 0){
+            time -= hour * 3600;
+        }
+
+        let minute = parseInt(time/60,10);
+        if (minute > 0){
+            time -= minute * 60;
+        }
+
+        let second = parseInt(time,10);;
+
+        if (hour > 0){
+            let timeArray = [this.PrefixInteger(hour,2),this.PrefixInteger(minute,2),this.PrefixInteger(second,2)].join(":");
+            this.timeLabel.string = timeArray;
+        }
+        else {
+            let timeArray = [this.PrefixInteger(minute,2),this.PrefixInteger(second,2)].join(":");
+            this.timeLabel.string = timeArray;
+        }
+    },
+
+    PrefixInteger:function (num, n) {
+        return (Array(n).join(0) + num).slice(-n);
+    },
+
     // called every framea
     update: function (dt) {
 
@@ -373,6 +402,7 @@ cc.Class({
             cc.log("this.shudu222222222222222222222222222222222",this.shudu);
             this.jiaZaiShuJu();
         }
+        this.FormatTime(this.time);
     },
 
 });
